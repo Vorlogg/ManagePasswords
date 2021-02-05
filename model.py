@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(543, 376)
+        MainWindow.resize(569, 373)
         MainWindow.setStyleSheet("QMainWindow {\n"
 "    background-color: rgb(240, 240, 240);\n"
 "}")
@@ -135,6 +135,38 @@ class Ui_MainWindow(object):
 " }")
         self.pushButton_3.setObjectName("pushButton_3")
         self.horizontalLayout.addWidget(self.pushButton_3)
+        self.pushButton_4 = QtWidgets.QPushButton(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.pushButton_4.sizePolicy().hasHeightForWidth())
+        self.pushButton_4.setSizePolicy(sizePolicy)
+        self.pushButton_4.setMinimumSize(QtCore.QSize(0, 0))
+        self.pushButton_4.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        self.pushButton_4.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.pushButton_4.setStyleSheet("QPushButton {\n"
+"    padding-top: 5px;\n"
+"    padding-bottom: 5px;\n"
+"    padding-left: 10px;\n"
+"    padding-right: 10px;\n"
+"    background-color:  qlineargradient(spread:pad, x1:1, y1:0, x2:1, y2:1, stop:0 rgba(230, 230, 230, 255), stop:1 rgba(255, 255, 255, 255));\n"
+"    border-style: outset;\n"
+"    border-top-right-radius: 10;\n"
+"    border-bottom-right-radius: 10;\n"
+"    border-width: 1px;\n"
+"    border-left-width: 0px;\n"
+"    border-color: rgb(110, 110, 110);\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background-color:rgb(220,220,220);\n"
+" }\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color:rgb(200,200,200);\n"
+" }")
+        self.pushButton_4.setObjectName("pushButton_4")
+        self.horizontalLayout.addWidget(self.pushButton_4)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
         self.verticalLayout.addLayout(self.horizontalLayout)
@@ -150,3 +182,4 @@ class Ui_MainWindow(object):
         self.pushButton_1.setText(_translate("MainWindow", "Добавить"))
         self.pushButton_2.setText(_translate("MainWindow", "Удалить"))
         self.pushButton_3.setText(_translate("MainWindow", "Найти"))
+        self.pushButton_4.setText(_translate("MainWindow", "Назад"))

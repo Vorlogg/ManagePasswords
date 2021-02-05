@@ -4,9 +4,9 @@ import sys
 from BD import Orm
 
 
-class AddMaterial(QtWidgets.QDialog):
+class AddPass(QtWidgets.QDialog):
     def __init__(self):
-        super(AddMaterial, self).__init__()
+        super(AddPass, self).__init__()
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
 
@@ -19,5 +19,5 @@ class AddMaterial(QtWidgets.QDialog):
         name = self.ui.lineEdit.text()
         password = self.ui.lineEdit_2.text()
 
-        self.bd.addmater(name, password)
+        self.bd.addlog(name, password)
         self.close()
