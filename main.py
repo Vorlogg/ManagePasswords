@@ -23,7 +23,7 @@ class InputDialog(QtWidgets.QDialog):
 
     def push(self):
         if self.edit.text():
-            r = self.bd.search_mater(self.edit.text())
+            r = self.bd.searchLog(self.edit.text())
             if r:
                 self.win.now(r)
                 self.close()
@@ -42,17 +42,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
         self.ui.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.state = 1
-        self.ui.pushButton_1.clicked.connect(self.addfac)
-        self.ui.pushButton_2.clicked.connect(self.addmat)
-        self.ui.pushButton_3.clicked.connect(self.delmat)
-        self.ui.pushButton_4.clicked.connect(self.search)
+#        self.ui.pushButton_1.clicked.connect(self.addfac)
+      #  self.ui.pushButton_2.clicked.connect(self.addmat)
+   #     self.ui.pushButton_3.clicked.connect(self.delmat)
+   #     self.ui.pushButton_4.clicked.connect(self.search)
         self.bd = Orm()
+        self.bd.addlog()
         self.now(self.bd.allmat())
         self.id = False
 
     def update(self):
         self.state = 1
-        self.now(self.bd.allmat(), 1)
+        self.now(self.bd.allmat())
         self.ui.pushButton.show()
         self.ui.pushButton_2.show()
         self.ui.pushButton_4.show()
@@ -74,7 +75,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 len(data[0])
             )
             self.ui.tableWidget.setHorizontalHeaderLabels(
-                    ('Название приложения', 'Пароль',))
+                    ('Id','Название приложения', 'Пароль',))
 
 
             row = 0
@@ -118,7 +119,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 msg.addButton('Ок', QMessageBox.RejectRole)
                 msg.exec()
             else:
-                self.bd.delmat(self.id)
+                self.bd.delLog(self.id)
                 self.now(self.bd.allmat(), state)
                 self.id = False
         elif state == 2:

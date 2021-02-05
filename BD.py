@@ -29,15 +29,14 @@ class Orm():
             r.append((id,name,password))
         return r
 
-    def addlog(self, name, company, store, supplier, reckoning, ndc, count, measure, price):
-        Login.create(name=name, company=company, store=store, supplier=supplier, reckoning=reckoning, ndc=ndc,
-                     count=count, allCount=count, measure=measure, price=price, allprice=count * price)
+    def addlog(self, name, password):
+        Login.create(name=name, password=password)
 
-    def delmat(self, id):
+    def delLog(self, id):
         r = Login.get(Login.id == id)
         r.delete_instance(recursive=True)
 
-    def search_mater(self, info):
+    def searchLog(self, info):
         r = []
         for mat in Login.select().where(Login.name.contains(info)):
             id = mat.id
