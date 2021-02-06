@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QModelIndex, QItemSelectionModel
 import sys
 from BD import Orm
+from add_pass import AddPass
 
 class InputDialog(QtWidgets.QDialog):
     def __init__(self, root, state):
@@ -46,7 +47,7 @@ class MainWindow(QtWidgets.QMainWindow):
    #     self.ui.pushButton_3.clicked.connect(self.delmat)
    #     self.ui.pushButton_4.clicked.connect(self.search)
         self.ui.pushButton_4.hide()
-
+        self.id=False
         self.bd = Orm()
         self.now(self.bd.allmat())
 
@@ -105,9 +106,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.pushButton_4.setEnabled(False)
 
     def addmat(self):
-        self.dualog = AddMaterial()
+        self.dualog = AddPass()
         self.dualog.exec()
-        self.now(self.bd.allmat(), self.state)
+        self.now(self.bd.allmat())
 
 
 
