@@ -41,15 +41,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.state = 1
         #self.ui.pushButton_1.clicked.connect(self.addfac)
       #  self.ui.pushButton_2.clicked.connect(self.addmat)
    #     self.ui.pushButton_3.clicked.connect(self.delmat)
    #     self.ui.pushButton_4.clicked.connect(self.search)
+        self.ui.pushButton_4.hide()
+
         self.bd = Orm()
-        self.bd.addlog()
         self.now(self.bd.allmat())
-        self.id = False
+
+   #      self.bd.addlog()
+   #      self.now(self.bd.allmat())`
+
 
     def update(self):
         self.state = 1
@@ -75,7 +78,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 len(data[0])
             )
             self.ui.tableWidget.setHorizontalHeaderLabels(
-                    ('Id','Название приложения', 'Пароль',))
+                    ('Id','Название приложения','Логин', 'Пароль',))
 
 
             row = 0

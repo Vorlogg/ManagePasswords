@@ -32,7 +32,7 @@ class Orm():
         return r
 
     def addlog(self, name,login, password):
-        Login.create(name=name, password=password,login=login)
+        Login.create(name=name,login=login,password=password)
 
     def delLog(self, id):
         r = Login.get(Login.id == id)
@@ -47,4 +47,3 @@ class Orm():
             password = mat.password
             r.append((id, name,login, password))
         return r
-
