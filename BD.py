@@ -5,6 +5,7 @@ db = SqliteDatabase('bd.db')
 
 class Login(Model):
     name = CharField()
+    login = CharField()
     password = CharField()
 
 
@@ -25,12 +26,13 @@ class Orm():
         for mat in Login.select():
             id = mat.id
             name = mat.name
+            login = mat.login
             password = mat.password
-            r.append((id,name,password))
+            r.append((id,name,login,password))
         return r
 
-    def addlog(self, name, password):
-        Login.create(name=name, password=password)
+    def addlog(self, name,login, password):
+        Login.create(name=name, password=password,login=login)
 
     def delLog(self, id):
         r = Login.get(Login.id == id)
@@ -41,7 +43,8 @@ class Orm():
         for mat in Login.select().where(Login.name.contains(info)):
             id = mat.id
             name = mat.name
+            login = mat.login
             password = mat.password
-            r.append((id, name, password))
+            r.append((id, name,login, password))
         return r
 
