@@ -10,7 +10,7 @@ class Login(Model):
 
 
     class Meta:
-        database = db  # модель базы данных
+        database = db
 
 
 class Orm():
@@ -21,7 +21,7 @@ class Orm():
         r = Login.get(Login.id == id)
         return r
 
-    def allmat(self):
+    def allLog(self):
         r = []
         for mat in Login.select():
             id = mat.id
@@ -40,10 +40,10 @@ class Orm():
 
     def searchLog(self, info):
         r = []
-        for mat in Login.select().where(Login.name.contains(info)):
-            id = mat.id
-            name = mat.name
-            login = mat.login
-            password = mat.password
+        for log in Login.select().where(Login.name.contains(info)):
+            id = log.id
+            name = log.name
+            login = log.login
+            password = log.password
             r.append((id, name,login, password))
         return r

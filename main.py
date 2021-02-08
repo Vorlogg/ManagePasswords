@@ -49,7 +49,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.pushButton_4.hide()
         self.id=False
         self.bd = Orm()
-        self.now(self.bd.allmat())
+        self.now(self.bd.allLog())
 
    #      self.bd.addlog()
    #      self.now(self.bd.allmat())`
@@ -57,7 +57,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def update(self):
         self.state = 1
-        self.now(self.bd.allmat())
+        self.now(self.bd.allLog())
         self.ui.pushButton.show()
         self.ui.pushButton_2.show()
         self.ui.pushButton_4.show()
@@ -93,7 +93,6 @@ class MainWindow(QtWidgets.QMainWindow):
                     )
                     self.ui.tableWidget.setItem(row, col, cellinfo)
                     # self.ui.tableWidget.horizontalHeader().setSectionResizeMode(col , QHeaderView.Stretch)
-
                     col += 1
 
                 row += 1
@@ -105,10 +104,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.pushButton_3.setEnabled(False)
             self.ui.pushButton_4.setEnabled(False)
 
-    def addmat(self):
+    def addLog(self):
         self.dualog = AddPass()
         self.dualog.exec()
-        self.now(self.bd.allmat())
+        self.now(self.bd.allLog())
 
 
 
@@ -116,7 +115,7 @@ class MainWindow(QtWidgets.QMainWindow):
         state = self.state
         if state == 1:
             if not self.id:
-                self.now(self.bd.allmat(), state)
+                self.now(self.bd.allLog(), state)
                 msg = QMessageBox()
                 msg.setWindowTitle("Ошибка")
                 msg.setText("Вы не выбрали не одну запись")
@@ -124,7 +123,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 msg.exec()
             else:
                 self.bd.delLog(self.id)
-                self.now(self.bd.allmat(), state)
+                self.now(self.bd.allLog(), state)
                 self.id = False
         elif state == 2:
             if not self.id:
