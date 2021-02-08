@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets
 from model import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QModelIndex, QItemSelectionModel
+from PyQt5.QtGui import *
 import sys
 from BD import Orm
 from add_pass import AddPass
@@ -118,7 +119,10 @@ class MainWindow(QtWidgets.QMainWindow):
     @pyqtSlot(QModelIndex)
     def on_tableWidget_doubleClicked(self, index: QModelIndex):  # получение списка обьектов
         r = self.ui.tableWidget.item(index.row(), index.column()).text()
-        print(r)
+        clipboard.setText(r)
+        print(clipboard.text())
+
+
 
 
 
@@ -140,6 +144,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 app = QtWidgets.QApplication([])
+clipboard=app.clipboard()
 application = MainWindow()
 application.show()
 

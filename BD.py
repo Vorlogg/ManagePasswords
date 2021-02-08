@@ -1,5 +1,5 @@
 from peewee import *
-
+from crypto import Cryto
 db = SqliteDatabase('bd.db')
 
 
@@ -7,8 +7,6 @@ class Login(Model):
     name = CharField()
     login = CharField()
     password = CharField()
-
-
     class Meta:
         database = db
 
@@ -16,6 +14,7 @@ class Login(Model):
 class Orm():
     def __init__(self):
         Login.create_table()
+        self.cr=Cryto()
 
     def getmat(self, id):
         r = Login.get(Login.id == id)
@@ -23,16 +22,15 @@ class Orm():
 
     def allLog(self):
         r = []
-        for mat in Login.select():
-            id = mat.id
-            name = mat.name
-            login = mat.login
-            password = mat.password
+        for log in Login.select():
+            id = log.id
+            name =self.cr.decrypt(log.name)
+            login =self.cr.decrypt(log.login)
+            password =self.cr.decrypt(log.password)
             r.append((id,name,login,password))
         return r
-
     def addlog(self, name,login, password):
-        Login.create(name=name,login=login,password=password)
+        Login.create(name=self.cr.encrypt(name),login=self.cr.encrypt(login), password=self.cr.encrypt(password))
 
     def delLog(self, id):
         r = Login.get(Login.id == id)
@@ -42,8 +40,8 @@ class Orm():
         r = []
         for log in Login.select().where(Login.name.contains(info)):
             id = log.id
-            name = log.name
-            login = log.login
-            password = log.password
+            name = self.cr.decrypt(log.name)
+            login = self.cr.decrypt(log.login)
+            password = self.cr.decrypt(log.password)
             r.append((id, name,login, password))
         return r
