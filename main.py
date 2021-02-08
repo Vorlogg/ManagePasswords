@@ -54,12 +54,15 @@ class AdminDialog(QtWidgets.QDialog):
         layout.addWidget(self.edit)
         layout.addWidget(button)
         self.setLayout(layout)
+        self.bd = Orm()
 
     def closeEvent(self, event):
         sys.exit(app.exec())
     def push(self):
         if self.chekAdmin:
             if self.adb.chekPass(self.edit.text()):
+                print("tru")
+                self.win.now(self.bd.allLog())
                 self.close()
             else:
                 msg = QMessageBox()
@@ -92,13 +95,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.pushButton_4.clicked.connect(self.tomain)
         self.ui.pushButton_4.hide()
         self.id=False
+        self.bd = Orm()
+        # self.now(self.bd.allLog()) доделать
+        self.chek()
+
+
+    def chek(self):
         self.admin = AdminDialog(self)
         self.admin.exec()
-        self.bd = Orm()
-        self.now(self.bd.allLog())
-
-
-
     def now(self, data):
         if data:
             self.ui.tableWidget.setEnabled(True)
