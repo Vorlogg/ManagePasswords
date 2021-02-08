@@ -7,10 +7,9 @@ from BD import Orm
 from add_pass import AddPass
 
 class InputDialog(QtWidgets.QDialog):
-    def __init__(self, root, state):
+    def __init__(self, root):
         super().__init__(root)
         self.win = root
-        self.state = state
         label = QtWidgets.QLabel('Введите название')
         self.edit = QtWidgets.QLineEdit()
         button = QtWidgets.QPushButton('Найти')
@@ -42,29 +41,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
-        #self.ui.pushButton_1.clicked.connect(self.addfac)
-      #  self.ui.pushButton_2.clicked.connect(self.addmat)
-   #     self.ui.pushButton_3.clicked.connect(self.delmat)
-   #     self.ui.pushButton_4.clicked.connect(self.search)
+        self.ui.pushButton_1.clicked.connect(self.addLog)
+        self.ui.pushButton_2.clicked.connect(self.delLog)
+        self.ui.pushButton_3.clicked.connect(self.search)
+        self.ui.pushButton_4.clicked.connect(self.tomain)
         self.ui.pushButton_4.hide()
         self.id=False
         self.bd = Orm()
         self.now(self.bd.allLog())
 
-   #      self.bd.addlog()
-   #      self.now(self.bd.allmat())`
 
-
-    def update(self):
-        self.state = 1
-        self.now(self.bd.allLog())
-        self.ui.pushButton.show()
-        self.ui.pushButton_2.show()
-        self.ui.pushButton_4.show()
-        self.ui.pushButton_6.show()
-        self.ui.pushButton_9.hide()
-        self.ui.pushButton_5.hide()
-        self.ui.pushButton_10.hide()
 
     def now(self, data):
         if data:
@@ -111,46 +97,19 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 
-    def delmat(self):  # проблема с индексами после удаления
-        state = self.state
-        if state == 1:
-            if not self.id:
-                self.now(self.bd.allLog(), state)
-                msg = QMessageBox()
-                msg.setWindowTitle("Ошибка")
-                msg.setText("Вы не выбрали не одну запись")
-                msg.addButton('Ок', QMessageBox.RejectRole)
-                msg.exec()
-            else:
-                self.bd.delLog(self.id)
-                self.now(self.bd.allLog(), state)
-                self.id = False
-        elif state == 2:
-            if not self.id:
-                self.now(self.bd.allres(), state)
-                msg = QMessageBox()
-                msg.setWindowTitle("Ошибка")
-                msg.setText("Вы не выбрали не одну запись")
-                msg.addButton('Ок', QMessageBox.RejectRole)
-                msg.exec()
-            else:
-                # print(self.id)
-                self.bd.delres(self.id)
-                self.now(self.bd.allres(), state)
-                self.id = False
-        elif state == 3:
-            if not self.id:
-                self.now(self.bd.allcon(), state)
-                msg = QMessageBox()
-                msg.setWindowTitle("Ошибка")
-                msg.setText("Вы не выбрали не одну запись")
-                msg.addButton('Ок', QMessageBox.RejectRole)
-                msg.exec()
-            else:
-                # print(self.id)
-                self.bd.delcon(self.id)
-                self.now(self.bd.allcon(), state)
-                self.id = False
+    def delLog(self):
+        if not self.id:
+            self.now(self.bd.allLog())
+            msg = QMessageBox()
+            msg.setWindowTitle("Ошибка")
+            msg.setText("Вы не выбрали не одну запись")
+            msg.addButton('Ок', QMessageBox.RejectRole)
+            msg.exec()
+        else:
+            self.bd.delLog(self.id)
+            self.now(self.bd.allLog())
+            self.id = False
+
 
     @pyqtSlot(QModelIndex)
     def on_tableWidget_clicked(self, index: QModelIndex):  # получение индекса строки при нажатие
@@ -158,42 +117,21 @@ class MainWindow(QtWidgets.QMainWindow):
 
     @pyqtSlot(QModelIndex)
     def on_tableWidget_doubleClicked(self, index: QModelIndex):  # получение списка обьектов
-        r = int(self.ui.tableWidget.item(index.row(), 0).text())
-        if self.state == 1:
-            data = self.bd.allfac(r)
-        elif self.state == 2:
-            res = self.bd.getres(r)
-            fio = res.name + " " + res.family[0] + ". " + res.patronymic[0] + '.'
-            data = self.bd.resfacil(fio)
+        r = self.ui.tableWidget.item(index.row(), index.column()).text()
+        print(r)
 
-        elif self.state == 3:
-            cons = self.bd.getcons(r)
-            data = self.bd.consfacil(cons.facility)
-        if not data:
-            msg = QMessageBox()
-            msg.setWindowTitle("Ошибка")
-            msg.setText("Нет записей")
-            msg.addButton('Ок', QMessageBox.RejectRole)
-            msg.exec()
 
-        else:
-            self.twow = TwoWindow(self, r, self.state)
-            self.twow.show()
 
     def search(self):
-        self.ui.pushButton_4.hide()
-        self.ui.pushButton_5.show()
-        self.search = InputDialog(self, self.state)
+        self.ui.pushButton_3.hide()
+        self.ui.pushButton_4.show()
+        self.search = InputDialog(self)
         self.search.exec()
 
     def tomain(self):
-        self.ui.pushButton_5.hide()
-        if self.state == 1:
-            self.update()
-        elif self.state == 2:
-            self.responsible()
-        elif self.state == 3:
-            self.constructionObject()
+        self.ui.pushButton_4.hide()
+        self.ui.pushButton_3.show()
+        self.now(self.bd.allLog())
 
 
 
