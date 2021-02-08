@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QModelIndex, QItemSelectionModel
 from PyQt5.QtGui import *
 import sys
-from BD import Orm
+from BD import Orm,AdminPassword
 from add_pass import AddPass
 
 class InputDialog(QtWidgets.QDialog):
@@ -35,6 +35,50 @@ class InputDialog(QtWidgets.QDialog):
                 msg.addButton('Ок', QMessageBox.RejectRole)
                 msg.exec()
 
+class AdminDialog(QtWidgets.QDialog):
+    def __init__(self, root):
+        super().__init__(root)
+        self.win = root
+        if not AdminPassword.chekDB():
+            label = QtWidgets.QLabel('Укажите пароль для доступа')
+            self.chekAdmin=False
+        else:
+            label = QtWidgets.QLabel('Введите пароль')
+            self.chekAdmin=True
+            self.adb=AdminPassword()
+        self.edit = QtWidgets.QLineEdit()
+        button = QtWidgets.QPushButton('Ок')
+        button.clicked.connect(self.push)
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(label)
+        layout.addWidget(self.edit)
+        layout.addWidget(button)
+        self.setLayout(layout)
+
+    def closeEvent(self, event):
+        sys.exit(app.exec())
+    def push(self):
+        if self.chekAdmin:
+            if self.adb.chekPass(self.edit.text()):
+                self.close()
+            else:
+                msg = QMessageBox()
+                msg.setWindowTitle("Ошибка")
+                msg.setText("Неправильный пароль ")
+                msg.addButton('Ок', QMessageBox.RejectRole)
+                msg.exec()
+        else:
+            if  self.edit.text():
+                self.adb = AdminPassword()
+                self.adb.addAdmin(self.edit.text())
+                self.close()
+            else:
+                msg = QMessageBox()
+                msg.setWindowTitle("Ошибка")
+                msg.setText("Пустая строка")
+                msg.addButton('Ок', QMessageBox.RejectRole)
+                msg.exec()
+
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -48,6 +92,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.pushButton_4.clicked.connect(self.tomain)
         self.ui.pushButton_4.hide()
         self.id=False
+        self.admin = AdminDialog(self)
+        self.admin.exec()
         self.bd = Orm()
         self.now(self.bd.allLog())
 

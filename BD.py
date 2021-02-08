@@ -1,6 +1,14 @@
 from peewee import *
 from crypto import Cryto
+import os.path
 db = SqliteDatabase('bd.db')
+admin = SqliteDatabase('admin.db')
+
+
+class Admin(Model):
+    password_admin = CharField()
+    class Meta:
+        database = admin
 
 
 class Login(Model):
@@ -10,13 +18,28 @@ class Login(Model):
     class Meta:
         database = db
 
+class AdminPassword():
+    def __init__(self):
+        Admin.create_table()
+        self.cr = Cryto()
+    def addAdmin(self,password):
+        Admin.create(password_admin=self.cr.encrypt(password))
+    @staticmethod
+    def chekDB():
+        return os.path.exists('admin.db')
+    def chekPass(self,password):
+        r=Admin.get(Admin.id==1)
+        if self.cr.decrypt(r.password_admin) == password:
+            return True
+        else:
+            return False
 
 class Orm():
     def __init__(self):
         Login.create_table()
         self.cr=Cryto()
 
-    def getmat(self, id):
+    def getLog(self, id):
         r = Login.get(Login.id == id)
         return r
 
