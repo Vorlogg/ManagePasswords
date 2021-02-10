@@ -9,9 +9,3 @@ class Cryto():
         return self.cipher.decrypt(data.encode('utf-8')).decode('utf-8')
     def generate(self):
         return Fernet.generate_key()
-
-# cr=Cryto()
-# c=cr.encrypt('hello')
-# print(c)
-# r=cr.decrypt(c)
-# print(r)

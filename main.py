@@ -4,8 +4,9 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QModelIndex, QItemSelectionModel
 from PyQt5.QtGui import *
 import sys
-from BD import Orm,AdminPassword
+from BD import Orm, AdminPassword
 from add_pass import AddPass
+
 
 class InputDialog(QtWidgets.QDialog):
     def __init__(self, root):
@@ -35,17 +36,18 @@ class InputDialog(QtWidgets.QDialog):
                 msg.addButton('Ок', QMessageBox.RejectRole)
                 msg.exec()
 
-class AdminDialog(QtWidgets.QDialog):
-    def __init__(self, root):
-        super().__init__(root)
-        self.win = root
+
+class AdminDialog(QWidget):
+    runMainWindow = pyqtSignal()
+    def __init__(self, parent=None):
+        super().__init__(parent)
         if not AdminPassword.chekDB():
             label = QtWidgets.QLabel('Укажите пароль для доступа')
-            self.chekAdmin=False
+            self.chekAdmin = False
         else:
             label = QtWidgets.QLabel('Введите пароль')
-            self.chekAdmin=True
-            self.adb=AdminPassword()
+            self.chekAdmin = True
+            self.adb = AdminPassword()
         self.edit = QtWidgets.QLineEdit()
         button = QtWidgets.QPushButton('Ок')
         button.clicked.connect(self.push)
@@ -56,14 +58,11 @@ class AdminDialog(QtWidgets.QDialog):
         self.setLayout(layout)
         self.bd = Orm()
 
-    def closeEvent(self, event):
-        sys.exit(app.exec())
+    @pyqtSlot()
     def push(self):
         if self.chekAdmin:
             if self.adb.chekPass(self.edit.text()):
-                print("tru")
-                self.win.now(self.bd.allLog())
-                self.close()
+                self.runMainWindow.emit()
             else:
                 msg = QMessageBox()
                 msg.setWindowTitle("Ошибка")
@@ -71,7 +70,7 @@ class AdminDialog(QtWidgets.QDialog):
                 msg.addButton('Ок', QMessageBox.RejectRole)
                 msg.exec()
         else:
-            if  self.edit.text():
+            if self.edit.text():
                 self.adb = AdminPassword()
                 self.adb.addAdmin(self.edit.text())
                 self.close()
@@ -83,9 +82,9 @@ class AdminDialog(QtWidgets.QDialog):
                 msg.exec()
 
 
-class MainWindow(QtWidgets.QMainWindow):
-    def __init__(self):
-        super().__init__()
+class MainWindow(QMainWindow):
+    def __init__(self, parent=None):
+        super().__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -94,15 +93,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.pushButton_3.clicked.connect(self.search)
         self.ui.pushButton_4.clicked.connect(self.tomain)
         self.ui.pushButton_4.hide()
-        self.id=False
+        self.id = False
         self.bd = Orm()
-        # self.now(self.bd.allLog()) доделать
-        self.chek()
+        self.now(self.bd.allLog())
 
-
-    def chek(self):
-        self.admin = AdminDialog(self)
-        self.admin.exec()
     def now(self, data):
         if data:
             self.ui.tableWidget.setEnabled(True)
@@ -116,8 +110,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 len(data[0])
             )
             self.ui.tableWidget.setHorizontalHeaderLabels(
-                    ('Id','Название приложения','Логин', 'Пароль',))
-
+                ('Id', 'Название приложения', 'Логин', 'Пароль',))
 
             row = 0
             for tup in data:
@@ -146,8 +139,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.dualog.exec()
         self.now(self.bd.allLog())
 
-
-
     def delLog(self):
         if not self.id:
             self.now(self.bd.allLog())
@@ -161,7 +152,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.now(self.bd.allLog())
             self.id = False
 
-
     @pyqtSlot(QModelIndex)
     def on_tableWidget_clicked(self, index: QModelIndex):  # получение индекса строки при нажатие
         self.id = int(self.ui.tableWidget.item(index.row(), 0).text())
@@ -170,11 +160,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def on_tableWidget_doubleClicked(self, index: QModelIndex):  # получение списка обьектов
         r = self.ui.tableWidget.item(index.row(), index.column()).text()
         clipboard.setText(r)
-        print(clipboard.text())
-
-
-
-
 
     def search(self):
         self.ui.pushButton_3.hide()
@@ -188,14 +173,19 @@ class MainWindow(QtWidgets.QMainWindow):
         self.now(self.bd.allLog())
 
 
+class Factory(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.mainWindow = MainWindow()
+        self.adminDialog = AdminDialog()
+        self.adminDialog.runMainWindow.connect(self.runMainWindow)
+        self.adminDialog.show()
 
-
-
-
+    def runMainWindow(self):
+        self.adminDialog.close()
+        self.mainWindow.show()
 
 app = QtWidgets.QApplication([])
-clipboard=app.clipboard()
-application = MainWindow()
-application.show()
-
+clipboard = app.clipboard()
+application = Factory()
 sys.exit(app.exec())
