@@ -1,8 +1,6 @@
-from PyQt5 import QtWidgets
 from model import *
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import pyqtSignal, pyqtSlot, QModelIndex, QItemSelectionModel
-from PyQt5.QtGui import *
+from PyQt5.QtCore import pyqtSignal, pyqtSlot, QModelIndex
 import sys
 from BD import Orm, AdminPassword
 from add_pass import AddPass
@@ -122,7 +120,7 @@ class MainWindow(QMainWindow):
                         QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled
                     )
                     self.ui.tableWidget.setItem(row, col, cellinfo)
-                    # self.ui.tableWidget.horizontalHeader().setSectionResizeMode(col , QHeaderView.Stretch)
+
                     col += 1
 
                 row += 1
