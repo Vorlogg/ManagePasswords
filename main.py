@@ -4,9 +4,9 @@ from PyQt5.QtCore import pyqtSignal, pyqtSlot, QModelIndex
 import sys
 from BD import Orm, AdminPassword
 from add_pass import AddPass
+from PyQt5.QtCore import Qt
 
-
-class InputDialog(QtWidgets.QDialog):
+class InputDialog(QtWidgets.QLabel):
     def __init__(self, root):
         super().__init__(root)
         self.win = root
@@ -21,6 +21,9 @@ class InputDialog(QtWidgets.QDialog):
         self.setLayout(layout)
         self.bd = Orm()
 
+    def keyPressEvent(self, e):
+        if e.key() == Qt.Key_Enter:
+            self.push()
     def push(self):
         if self.edit.text():
             r = self.bd.searchLog(self.edit.text())
@@ -56,6 +59,9 @@ class AdminDialog(QWidget):
         self.setLayout(layout)
         self.bd = Orm()
 
+    def keyPressEvent(self, e):
+        if e.key() == Qt.Key_Enter:
+            self.push()
     @pyqtSlot()
     def push(self):
         if self.chekAdmin:
@@ -78,6 +84,8 @@ class AdminDialog(QWidget):
                 msg.setText("Пустая строка")
                 msg.addButton('Ок', QMessageBox.RejectRole)
                 msg.exec()
+
+
 
 
 class MainWindow(QMainWindow):

@@ -177,7 +177,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Учет материалов"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Менеджер паролей"))
         self.tableWidget.setSortingEnabled(False)
         self.pushButton_1.setText(_translate("MainWindow", "Добавить"))
         self.pushButton_2.setText(_translate("MainWindow", "Удалить"))
