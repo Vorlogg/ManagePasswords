@@ -182,8 +182,8 @@ class Factory(QWidget):
     def runMainWindow(self):
         self.adminDialog.close()
         self.mainWindow.show()
-
-app = QtWidgets.QApplication([])
-clipboard = app.clipboard()
-application = Factory()
-sys.exit(app.exec())
+if __name__ == "__main__":
+    app = QtWidgets.QApplication([])
+    clipboard = app.clipboard()
+    application = Factory()
+    sys.exit(app.exec())

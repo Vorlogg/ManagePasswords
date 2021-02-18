@@ -47,23 +47,23 @@ class Orm():
         r = []
         for log in Login.select():
             id = log.id
-            name =self.cr.decrypt(log.name)
+            name =log.name
             login =self.cr.decrypt(log.login)
             password =self.cr.decrypt(log.password)
             r.append((id,name,login,password))
         return r
     def addlog(self, name,login, password):
-        Login.create(name=self.cr.encrypt(name),login=self.cr.encrypt(login), password=self.cr.encrypt(password))
+        Login.create(name=name,login=self.cr.encrypt(login), password=self.cr.encrypt(password))
 
     def delLog(self, id):
         r = Login.get(Login.id == id)
         r.delete_instance(recursive=True)
 
-    def searchLog(self, info):
+    def searchLog(self, name):
         r = []
-        for log in Login.select().where(Login.name.contains(info)):
+        for log in Login.select().where(Login.name.contains(name)):
             id = log.id
-            name = self.cr.decrypt(log.name)
+            name =log.name
             login = self.cr.decrypt(log.login)
             password = self.cr.decrypt(log.password)
             r.append((id, name,login, password))

@@ -18,7 +18,7 @@ class AddPass(QtWidgets.QDialog):
     def add(self):
         name = self.ui.lineEdit_1.text()
         login = self.ui.lineEdit_2.text()
-        password = self.ui.lineEdit_2.text()
+        password = self.ui.lineEdit_3.text()
 
         self.bd.addlog(name, login,password)
         self.close()
