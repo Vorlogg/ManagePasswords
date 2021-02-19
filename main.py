@@ -6,7 +6,7 @@ from BD import Orm, AdminPassword
 from add_pass import AddPass
 from PyQt5.QtCore import Qt
 
-class InputDialog(QtWidgets.QLabel):
+class InputDialog(QtWidgets.QDialog):
     def __init__(self, root):
         super().__init__(root)
         self.win = root
@@ -21,9 +21,7 @@ class InputDialog(QtWidgets.QLabel):
         self.setLayout(layout)
         self.bd = Orm()
 
-    def keyPressEvent(self, e):
-        if e.key() == Qt.Key_Enter:
-            self.push()
+
     def push(self):
         if self.edit.text():
             r = self.bd.searchLog(self.edit.text())
@@ -38,7 +36,7 @@ class InputDialog(QtWidgets.QLabel):
                 msg.exec()
 
 
-class AdminDialog(QWidget):
+class AdminDialog(QtWidgets.QDialog):
     runMainWindow = pyqtSignal()
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -59,9 +57,6 @@ class AdminDialog(QWidget):
         self.setLayout(layout)
         self.bd = Orm()
 
-    def keyPressEvent(self, e):
-        if e.key() == Qt.Key_Enter:
-            self.push()
     @pyqtSlot()
     def push(self):
         if self.chekAdmin:
