@@ -52,8 +52,19 @@ class Orm():
             password =self.cr.decrypt(log.password)
             r.append((id,name,login,password))
         return r
+    def getChange(self,id):
+        data = Login.get(Login.id == id)
+        r=[]
+        id = data.id
+        name =data.name
+        login =self.cr.decrypt(data.login)
+        password =self.cr.decrypt(data.password)
+        r.append((id,name,login,password))
+        return r
     def addlog(self, name,login, password):
         Login.create(name=name,login=self.cr.encrypt(login), password=self.cr.encrypt(password))
+    def changelog(self,id, name,login, password):
+        Login.create(id=id,name=name,login=self.cr.encrypt(login), password=self.cr.encrypt(password))
 
     def delLog(self, id):
         r = Login.get(Login.id == id)
@@ -68,3 +79,4 @@ class Orm():
             password = self.cr.decrypt(log.password)
             r.append((id, name,login, password))
         return r
+

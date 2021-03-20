@@ -93,6 +93,7 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_2.clicked.connect(self.delLog)
         self.ui.pushButton_3.clicked.connect(self.search)
         self.ui.pushButton_4.clicked.connect(self.tomain)
+        self.ui.pushButton_5.clicked.connect(self.changeData)
         self.ui.pushButton_4.hide()
         self.id = False
         self.bd = Orm()
@@ -139,6 +140,19 @@ class MainWindow(QMainWindow):
         self.dualog = AddPass()
         self.dualog.exec()
         self.now(self.bd.allLog())
+    def changeData(self):
+        if not self.id:
+            self.now(self.bd.allLog())
+            msg = QMessageBox()
+            msg.setWindowTitle("Ошибка")
+            msg.setText("Вы не выбрали не одну запись")
+            msg.addButton('Ок', QMessageBox.RejectRole)
+            msg.exec()
+        else:
+            self.dualog = AddPass(self.id)
+            self.dualog.exec()
+            self.now(self.bd.allLog())
+            self.id = False
 
     def delLog(self):
         if not self.id:
