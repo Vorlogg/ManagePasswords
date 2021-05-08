@@ -1,10 +1,12 @@
-from model import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import pyqtSignal, pyqtSlot, QModelIndex
 import sys
+
+from PyQt6.QtCore import pyqtSignal, pyqtSlot, QModelIndex
+from PyQt6.QtWidgets import *
+
 from BD import Orm, AdminPassword
 from add_pass import AddPass
-from PyQt5.QtCore import Qt
+from model import *
+
 
 class InputDialog(QtWidgets.QDialog):
     def __init__(self, root):
@@ -21,10 +23,9 @@ class InputDialog(QtWidgets.QDialog):
         self.setLayout(layout)
         self.bd = Orm()
 
-
     def push(self):
         if self.edit.text():
-            r = self.bd.searchLog(self.edit.text())
+            r = self.bd.search_log(self.edit.text())
             if r:
                 self.win.now(r)
                 self.close()
@@ -32,15 +33,16 @@ class InputDialog(QtWidgets.QDialog):
                 msg = QMessageBox()
                 msg.setWindowTitle("Ошибка")
                 msg.setText("Не найдено ")
-                msg.addButton('Ок', QMessageBox.RejectRole)
+                msg.addButton('Ок', QMessageBox.ButtonRole.RejectRole)
                 msg.exec()
 
 
 class AdminDialog(QtWidgets.QDialog):
     runMainWindow = pyqtSignal()
+
     def __init__(self, parent=None):
         super().__init__(parent)
-        if not AdminPassword.chekDB():
+        if not AdminPassword.chek_db():
             label = QtWidgets.QLabel('Укажите пароль для доступа')
             self.chekAdmin = False
         else:
@@ -60,27 +62,25 @@ class AdminDialog(QtWidgets.QDialog):
     @pyqtSlot()
     def push(self):
         if self.chekAdmin:
-            if self.adb.chekPass(self.edit.text()):
+            if self.adb.chek_password(self.edit.text()):
                 self.runMainWindow.emit()
             else:
                 msg = QMessageBox()
                 msg.setWindowTitle("Ошибка")
                 msg.setText("Неправильный пароль ")
-                msg.addButton('Ок', QMessageBox.RejectRole)
+                msg.addButton('Ок', QMessageBox.ButtonRole.RejectRole)
                 msg.exec()
         else:
             if self.edit.text():
                 self.adb = AdminPassword()
-                self.adb.addAdmin(self.edit.text())
+                self.adb.add_admin(self.edit.text())
                 self.close()
             else:
                 msg = QMessageBox()
                 msg.setWindowTitle("Ошибка")
                 msg.setText("Пустая строка")
-                msg.addButton('Ок', QMessageBox.RejectRole)
+                msg.addButton('Ок', QMessageBox.ButtonRole.ButtonRole.RejectRole)
                 msg.exec()
-
-
 
 
 class MainWindow(QMainWindow):
@@ -88,16 +88,16 @@ class MainWindow(QMainWindow):
         super().__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.ui.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.ui.pushButton_1.clicked.connect(self.addLog)
-        self.ui.pushButton_2.clicked.connect(self.delLog)
+        self.ui.tableWidget.setSelectionBehavior(QTableView.SelectionBehavior.SelectRows)
+        self.ui.pushButton_1.clicked.connect(self.add_log)
+        self.ui.pushButton_2.clicked.connect(self.del_log)
         self.ui.pushButton_3.clicked.connect(self.search)
-        self.ui.pushButton_4.clicked.connect(self.tomain)
-        self.ui.pushButton_5.clicked.connect(self.changeData)
+        self.ui.pushButton_4.clicked.connect(self.to_main)
+        self.ui.pushButton_5.clicked.connect(self.change_data)
         self.ui.pushButton_4.hide()
         self.id = False
         self.bd = Orm()
-        self.now(self.bd.allLog())
+        self.now(self.bd.all_log())
 
     def now(self, data):
         if data:
@@ -113,7 +113,6 @@ class MainWindow(QMainWindow):
             )
             self.ui.tableWidget.setHorizontalHeaderLabels(
                 ('Id', 'Название приложения', 'Логин', 'Пароль',))
-
             row = 0
             for tup in data:
                 col = 0
@@ -121,7 +120,7 @@ class MainWindow(QMainWindow):
                 for item in tup:
                     cellinfo = QTableWidgetItem(str(item))
                     cellinfo.setFlags(
-                        QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled
+                        QtCore.Qt.ItemFlags.ItemIsSelectable | QtCore.Qt.ItemFlags.ItemIsEnabled
                     )
                     self.ui.tableWidget.setItem(row, col, cellinfo)
 
@@ -129,42 +128,46 @@ class MainWindow(QMainWindow):
 
                 row += 1
                 self.ui.tableWidget.resizeColumnsToContents()
-                self.ui.tableWidget.horizontalHeader().setSectionResizeMode(col - 1, QHeaderView.Stretch)
+                # self.ui.tableWidget.horizontalHeader().setSectionResizeMode(col - 1, QHeaderView.stretchSectionCount)
+                self.ui.tableWidget.horizontalHeader().setStretchLastSection(True)
+
         else:
             self.ui.tableWidget.clear()
             self.ui.tableWidget.setEnabled(False)
             self.ui.pushButton_3.setEnabled(False)
             self.ui.pushButton_4.setEnabled(False)
 
-    def addLog(self):
+    def add_log(self):
+
         self.dualog = AddPass()
         self.dualog.exec()
-        self.now(self.bd.allLog())
-    def changeData(self):
+        self.now(self.bd.all_log())
+
+    def change_data(self):
         if not self.id:
-            self.now(self.bd.allLog())
+            self.now(self.bd.all_log())
             msg = QMessageBox()
             msg.setWindowTitle("Ошибка")
             msg.setText("Вы не выбрали не одну запись")
-            msg.addButton('Ок', QMessageBox.RejectRole)
+            msg.addButton('Ок', QMessageBox.ButtonRole.RejectRole)
             msg.exec()
         else:
             self.dualog = AddPass(self.id)
             self.dualog.exec()
-            self.now(self.bd.allLog())
+            self.now(self.bd.all_log())
             self.id = False
 
-    def delLog(self):
+    def del_log(self):
         if not self.id:
-            self.now(self.bd.allLog())
+            self.now(self.bd.all_log())
             msg = QMessageBox()
             msg.setWindowTitle("Ошибка")
             msg.setText("Вы не выбрали не одну запись")
-            msg.addButton('Ок', QMessageBox.RejectRole)
+            msg.addButton('Ок', QMessageBox.ButtonRole.RejectRole)
             msg.exec()
         else:
-            self.bd.delLog(self.id)
-            self.now(self.bd.allLog())
+            self.bd.del_log(self.id)
+            self.now(self.bd.all_log())
             self.id = False
 
     @pyqtSlot(QModelIndex)
@@ -179,13 +182,13 @@ class MainWindow(QMainWindow):
     def search(self):
         self.ui.pushButton_3.hide()
         self.ui.pushButton_4.show()
-        self.search = InputDialog(self)
-        self.search.exec()
+        self.search_dialog = InputDialog(self)
+        self.search_dialog.exec()
 
-    def tomain(self):
+    def to_main(self):
         self.ui.pushButton_4.hide()
         self.ui.pushButton_3.show()
-        self.now(self.bd.allLog())
+        self.now(self.bd.all_log())
 
 
 class Factory(QWidget):
@@ -199,6 +202,8 @@ class Factory(QWidget):
     def runMainWindow(self):
         self.adminDialog.close()
         self.mainWindow.show()
+
+
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
     clipboard = app.clipboard()

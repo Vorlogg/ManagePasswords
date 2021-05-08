@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets
 from add_model import *  # импорт нашего сгенерированного файла
 import sys
 from BD import Orm
@@ -14,7 +14,7 @@ class AddPass(QtWidgets.QDialog):
         self.bd = Orm()
         self.id=id
         if self.id:
-            data=self.bd.getChange(self.id)
+            data=self.bd.get_change(self.id)
             self.ui.lineEdit_1.setText(str(data[0][1]))
             self.ui.lineEdit_2.setText(str(data[0][2]))
             self.ui.lineEdit_3.setText(str(data[0][3]))
@@ -26,8 +26,8 @@ class AddPass(QtWidgets.QDialog):
         login = self.ui.lineEdit_2.text()
         password = self.ui.lineEdit_3.text()
         if self.id:
-            self.bd.delLog(self.id)
+            self.bd.del_log(self.id)
             self.bd.changelog(self.id,name,login,password)
         else:
-            self.bd.addlog(name, login,password)
+            self.bd. add_log(name, login,password)
         self.close()
